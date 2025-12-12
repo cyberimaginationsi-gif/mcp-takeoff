@@ -350,7 +350,7 @@ export default function createStatelessServer({ config }: Ctx) {
 
   // 1) 첫 번째 tool: spec-1 (MD + docx 위치 안내)
   server.tool(
-    "docs.getSpec1",
+    "docs_getSpec1",
     "API Spec 문서 #1 (요약 + docx 위치)를 제공합니다.",
     {},
     async () => {
@@ -372,7 +372,7 @@ export default function createStatelessServer({ config }: Ctx) {
 
   // 2) 두 번째 tool: spec-2 (MD + docx 위치 안내)
   server.tool(
-    "docs.getSpec2",
+    "docs_getSpec2",
     "OAuth2 토큰 발급 및 MCP API 전체 스펙(Spec-2)을 요약해서 보여줍니다.",
     {},
     async () => {
