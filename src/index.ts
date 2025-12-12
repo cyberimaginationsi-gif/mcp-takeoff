@@ -21,107 +21,236 @@ async function readDocxAsBase64(filePath: string) {
 // ================================
 // ✅ SPEC1_MD: docx에서 뽑은 내용을 LLM용 Markdown으로 정리
 // ================================
-const SPEC1_MD = [
-  "# Cyber MCP API Spec (from spec-1.docx)",
-  "",
-  "## 1. MCP테스트 – APIPATH 조회",
-  "",
-  "### Description",
-  "등록된 API 메뉴/경로 정보를 조회합니다.",
-  "",
-  "### Endpoint",
-  "- **GET** `/svc/mcp/apipath`",
-  "",
-  "### Example Response",
-  "{",
-  '  "OutBlock_1": [',
-  "    {",
-  '      "menuId": "__",',
-  '      "upMenuId": "__",',
-  '      "menuNm": "__",',
-  '      "menuOrd": "__",',
-  '      "menuTp": "__"',
-  "    }",
-  "  ]",
-  "}",
-  "",
-  "---",
-  "",
-  "## 2. MCP테스트 – Client 조회",
-  "",
-  "### Description",
-  "등록된 클라이언트 목록을 조회합니다.",
-  "",
-  "### Endpoint",
-  "- **GET** `/svc/mcp/getClient`",
-  "",
-  "### Example Response",
-  "{",
-  '  "OutBlock_1": [',
-  "    {",
-  '      "clientId": "__",',
-  '      "clientNm": "__",',
-  '      "clientEmail": "__",',
-  '      "clientIp": "__",',
-  '      "regDd": "__",',
-  '      "authKey": "__",',
-  '      "lstWrtrId": "__",',
-  '      "lstWrtrNm": "__",',
-  '      "lstWrtrDdtm": "__",',
-  '      "sumYn": "__",',
-  '      "keyStrtDd": "__",',
-  '      "keyEndDd": "__",',
-  '      "nextAuthKey": "__",',
-  '      "pw": "__",',
-  '      "useYn": "__"',
-  "    }",
-  "  ]",
-  "}",
-  "",
-  "---",
-  "",
-  "## 3. MCP테스트 – 회원 조회",
-  "",
-  "### Description",
-  "특정 Client ID에 대한 회원 정보를 조회합니다.",
-  "",
-  "### Endpoint",
-  "- **GET** `/svc/mcp/getUserInfo`",
-  "",
-  "### Query Parameters",
-  "| Name     | Type   | Required | Description           |",
-  "|----------|--------|----------|-----------------------|",
-  "| clientId | string | Yes      | 조회할 클라이언트 ID |",
-  "",
-  "### Example Response",
-  "{",
-  '  "OutBlock_1": [',
-  "    {",
-  '      "clientId": "__",',
-  '      "clientNm": "__",',
-  '      "regDd": "__",',
-  '      "useYn": "__"',
-  "    }",
-  "  ]",
-  "}",
-  "",
-  "---",
-  "",
-  "## Summary Table",
-  "",
-  "| API          | Method | Path                     | Description              |",
-  "|--------------|--------|--------------------------|--------------------------|",
-  "| APIPATH 조회 | GET    | `/svc/mcp/apipath`       | API Path 목록 조회       |",
-  "| Client 조회  | GET    | `/svc/mcp/getClient`     | 클라이언트 리스트 조회   |",
-  "| 회원 조회    | GET    | `/svc/mcp/getUserInfo`   | clientId 기반 회원 조회 |",
-  "",
-  "---",
-  "",
-  "## Notes",
-  "- 모든 API는 `OutBlock_1` 배열을 포함하는 JSON 응답 구조를 사용합니다.",
-  "- `__` 표시는 문서 예시에서 빈 값 또는 예시용 placeholder 입니다.",
-  "- 실제 서비스에서는 authKey, 암호화된 값 등이 포함될 수 있습니다.",
-].join("\n");
+export const SPEC1_MD = `# MCP API Documentation (Spec-1)
+
+**Base URL:** \`https://demo-rapi.cyber-i.com\`
+
+> ⚠️ 모든 API 호출 전, 반드시 \`/svc/mcp/token\` API로 OAuth2.0 Access Token을 발급받아  
+> \`Authorization: Bearer {token}\` 형태로 헤더에 포함해야 정상 응답함.
+
+---
+
+## 1. 상품기본조회 — \`/svc/mcp/getStockInfo\`
+상품 기본 정보를 조회하는 API.
+
+### **Request**
+\`\`\`json
+{
+  "PDNO": "string",          // 상품번호
+  "PRDT_TYPE_CD": "string"   // 상품유형코드
+}
+\`\`\`
+
+### **Response**
+\`\`\`json
+{
+  "pdno": "string",
+  "prdt_type_cd": "string",
+  "prdt_name": "string",
+  "prdt_name120": "string",
+  "prdt_abrv_name": "string",
+  "prdt_eng_name": "string",
+  "prdt_eng_name120": "string",
+  "prdt_eng_abrv_name": "string",
+  "std_pdno": "string",
+  "shtn_pdno": "string",
+  "prdt_clsf_cd": "string",
+  "prdt_clsf_name": "string"
+}
+\`\`\`
+
+### **Common OutBlock**
+\`\`\`json
+{
+  "rt_cd": "string",
+  "msg_cd": "string",
+  "msg1": "string"
+}
+\`\`\`
+
+---
+
+## 2. 계좌조회 — \`/svc/mcp/getMyAcntInfo\`
+계좌 정보를 조회하는 API.
+
+### **Request**
+\`\`\`json
+{
+  "id": "string"
+}
+\`\`\`
+
+### **Response**
+\`\`\`json
+{
+  "account_no": "string",
+  "account_name": "string",
+  "cash_balance": "string",
+  "stock_value": "string",
+  "total_asset": "string"
+}
+\`\`\`
+
+---
+
+## 3. 거래량순위(국내주식) — \`/svc/mcp/getVolumeRank\`
+국내 주식 거래량 상위 목록 조회.
+
+### **Request**
+없음 (\`{}\`)
+
+### **Response**
+\`\`\`json
+{
+  "hts_kor_isnm": "string",
+  "data_rank": "string",
+  "stck_prpr": "string",
+  "prdy_vrss_sign": "string",
+  "prdy_vrss": "string",
+  "prdy_ctrt": "string",
+  "acml_vol": "string",
+  "prdy_vol": "string",
+  "lstn_stcn": "string",
+  "avrg_vol": "string"
+}
+\`\`\`
+
+---
+
+## 4. HTS 조회 상위 20종목 — \`/svc/mcp/htsTopView\`
+
+### **Response OutBlock_1**
+\`\`\`json
+{
+  "mkt_div_code": "string",   // J:코스피, Q:코스닥
+  "stock_code": "string",
+  "stock_name": "string"
+}
+\`\`\`
+
+### **Response OutBlock_2 (공통 코드)**
+\`\`\`json
+{
+  "rt_cd": "string",
+  "msg_cd": "string",
+  "msg1": "string"
+}
+\`\`\`
+
+---
+
+## 5. 주문목록 — \`/svc/mcp/getOrderList\`
+
+### **Request**
+없음 (\`{}\`)
+
+### **Response**
+\`\`\`json
+{
+  "order_id": "string",
+  "account_no": "string",
+  "stock_code": "string",
+  "stock_name": "string",
+  "order_type": "string",
+  "order_price": "string",
+  "order_qty": "string"
+}
+\`\`\`
+
+---
+
+## 6. APIPATH 조회 — \`/svc/mcp/apipath\`
+
+### **Response OutBlock_1**
+\`\`\`json
+{
+  "menuId": "string",
+  "upMenuId": "string",
+  "menuNm": "string",
+  "menuOrd": 0,
+  "menuTp": "string"
+}
+\`\`\`
+
+---
+
+## 7. 회원조회 — \`/svc/mcp/getUserInfo\`
+
+### **Request**
+\`\`\`json
+{
+  "clientId": "string"
+}
+\`\`\`
+
+### **Response OutBlock_1**
+\`\`\`json
+{
+  "clientId": "string",
+  "clientNm": "string",
+  "regDd": "string",
+  "useYn": "string"
+}
+\`\`\`
+
+---
+
+## 8. Client 조회 — \`/svc/mcp/getClient\`
+회원(Client) 조회 API.  
+다건 조회 가능하며 Token 인증 필수.
+
+### **Response OutBlock_1**
+\`\`\`json
+{
+  "clientId": "string",
+  "clientNm": "string",
+  "clientEmail": "string",
+  "clientIp": "string",
+  "regDd": "string",
+  "authKey": "string",
+  "lstWrtrId": "string",
+  "lstWrtrNm": "string",
+  "lstWrtrDdtm": "string",
+  "sumYn": "string",
+  "keyStrtDd": "string",
+  "keyEndDd": "string",
+  "nextAuthKey": "string",
+  "pw": "string",
+  "useYn": "string"
+}
+\`\`\`
+
+---
+
+## 9. OAuth Token 발급 — \`/svc/mcp/token\`
+
+### **Grant Types**
+- \`authorization_code\`
+- \`client_credentials\`
+
+### **Request**
+\`\`\`json
+{
+  "code": "string",
+  "client_id": "string",
+  "client_secret": "string",
+  "scope": "string",
+  "grant_type": "string",
+  "redirect_uri": "string",
+  "refresh_token": "string"
+}
+\`\`\`
+
+### **Response**
+\`\`\`json
+{
+  "token_type": "string",
+  "access_token": "string",
+  "expires_in": 0,
+  "refresh_token": "string"
+}
+\`\`\`
+`;
 
 // ================================
 // SPEC2_MD: 두 번째 스펙 문서용 (나중에 docx 기준으로 채워도 됨)
